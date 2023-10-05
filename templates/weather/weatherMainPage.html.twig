@@ -1,0 +1,46 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Погода{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('form.css', 'css') }}">
+{% endblock %}
+
+{% block body %}
+    <div class="center">
+        <h1>Погода</h1>
+        <form action="{{ path('get_weather') }}" method="post">
+            <label>
+                Введите город для которого показать погоду
+            </label>
+            <div class="inputbox">
+                <input type="text" name="cityName" placeholder="Казань">
+            </div>
+            <label>
+                Выберите на сколько дней показать погоду
+            </label>
+            <div class="inputbox">
+                <select name="option">
+                    <option value="1" selected>1 день</option>
+                    <option value="2">2 дня</option>
+                    <option value="3">3 дня</option>
+                    <option value="4">4 дня</option>
+                    <option value="5">5 дней</option>
+                    <option value="6">6 дней</option>
+                    <option value="7">7 дней</option>
+                    <option value="8">8 дней</option>
+                    <option value="9">9 дней</option>
+                    <option value="10">10 дней</option>
+                    <option value="11">11 дней</option>
+                    <option value="12">12 дней</option>
+                    <option value="13">13 дней</option>
+                    <option value="14">14 дней</option>
+                </select>
+            </div>
+            <div class="inputbox">
+                <input type="submit" name="submit" value="Получить погоду">
+            </div>
+        </form>
+    </div>
+
+{% endblock %}

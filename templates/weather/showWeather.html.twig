@@ -1,0 +1,46 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Погода{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('weather.css', 'css') }}"
+{% endblock %}
+
+{% block body %}
+    {% if days == 1 %}
+        <p>Почасовая погода в городе <b>{{ weather_array['location']['name'] }}
+                на {{ weather_array['location']['localtime']|slice(0,10) }}</b></p>
+        {% for temp_hour in weather_array['forecast']['forecastday'][0]['hour'] %}
+            Время {{ temp_hour['time']|slice(11) }} {{ temp_hour['temp_c'] }} ℃ <br>
+        {% endfor %}
+
+    {% else %}
+        {% if days == 2 or days == 3 or days == 4 %}
+            <h1 class="text">Погода на {{ days }} дня в городе <b>{{ weather_array['location']['name'] }}</b></h1>
+        {% else %}
+            <h1 class="text">Погода на {{ days }} дней в городе {{ weather_array['location']['name'] }}</h1>
+        {% endif %}
+
+        {% for temp_day in weather_array['forecast']['forecastday'] %}
+            <div id="weather_wrapper">
+                <div class="weatherCard">
+                    <div class="currentTemp">
+                        <span class="temp">{{ temp_day['day']['maxtemp_c'] | round }}&deg;/{{ temp_day['day']['mintemp_c'] | round }}&deg;</span>
+                        <span class="location">{{ weather_array['location']['name'] }}</span>
+                        <span class="location">{{ temp_day['date'] | date("d D") }}</span>
+                    </div>
+                    <div class="currentWeather">
+                        <span class="conditions">&#xf00d;</span>
+                        <div class="info">
+                            <img class="rain-img" src="{{ asset('humidity.png', 'images') }}">
+                            <span class="rain">Влаж. {{ temp_day['day']['avghumidity'] }}</span>
+                            <img class="wind-img" src="{{ asset('wind.png', 'images') }}">
+                            <span class="wind">{{ temp_day['day']['maxwind_kph'] }} КМ/Ч</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+{% endblock %}
