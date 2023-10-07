@@ -3,17 +3,42 @@
 {% block title %}Погода{% endblock %}
 
 {% block stylesheets %}
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
     <link rel="stylesheet" href="{{ asset('weather.css', 'css') }}"
 {% endblock %}
 
 {% block body %}
     {% if days == 1 %}
-        <p>Почасовая погода в городе <b>{{ weather_array['location']['name'] }}
-                на {{ weather_array['location']['localtime']|slice(0,10) }}</b></p>
-        {% for temp_hour in weather_array['forecast']['forecastday'][0]['hour'] %}
-            Время {{ temp_hour['time']|slice(11) }} {{ temp_hour['temp_c'] }} ℃ <br>
-        {% endfor %}
-
+        <h1>Почасовая погода в городе <b>{{ weather_array['location']['name'] }}
+                на {{ weather_array['location']['localtime']|slice(0,10) | date("d, D") }}</b></h1>
+        <table class="table table-bordered border-info">
+            <thead>
+            <tr>
+                {% for temp_hour in weather_array['forecast']['forecastday'][0]['hour'] %}
+                    <th>{{ temp_hour['time'] | date('H') }}ч</th>
+                {% endfor %}
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                {% for temp_hour in weather_array['forecast']['forecastday'][0]['hour'] %}
+                    <td>
+                        {% if 'rain' in temp_hour['condition']['text'] %}
+                            <img src="{{ asset('rain.png', 'images') }}"  width="70px">
+                        {% elseif 'Sunny' in temp_hour['condition']['text'] %}
+                            <img src="{{ asset('sun.png', 'images') }}"  width="70px">
+                        {% elseif 'Clear' in temp_hour['condition']['text'] %}
+                            <img src="{{ asset('clear.png', 'images') }}"  width="70px">
+                        {% elseif 'cloudy' or 'Overcast' in temp_hour['condition']['text'] %}
+                            <img src="{{ asset('cloudy.png', 'images') }}"  width="70px">
+                        {% endif %}
+                        {{ temp_hour['temp_c'] }} ℃
+                    </td>
+                {% endfor %}
+            </tr>
+            </tbody>
+        </table>
     {% else %}
         {% if days == 2 or days == 3 or days == 4 %}
             <h1 class="text">Погода на {{ days }} дня в городе <b>{{ weather_array['location']['name'] }}</b></h1>
@@ -25,12 +50,19 @@
             <div id="weather_wrapper">
                 <div class="weatherCard">
                     <div class="currentTemp">
+                        <img class="day-night-img" src="{{ asset('day-night.png', 'images') }}">
                         <span class="temp">{{ temp_day['day']['maxtemp_c'] | round }}&deg;/{{ temp_day['day']['mintemp_c'] | round }}&deg;</span>
                         <span class="location">{{ weather_array['location']['name'] }}</span>
                         <span class="location">{{ temp_day['date'] | date("d D") }}</span>
                     </div>
                     <div class="currentWeather">
-                        <span class="conditions">&#xf00d;</span>
+                        {% if 'rain' in temp_day['day']['condition']['text'] %}
+                            <img class="condition" src="{{ asset('rain.png', 'images') }}">
+                        {% elseif 'Sunny' in temp_day['day']['condition']['text'] %}
+                            <img class="condition" src="{{ asset('sun.png', 'images') }}">
+                        {% elseif 'cloudy' or 'Overcast' in temp_day['day']['condition']['text'] %}
+                            <img class="condition" src="{{ asset('cloudy.png', 'images') }}">
+                        {% endif %}
                         <div class="info">
                             <img class="rain-img" src="{{ asset('humidity.png', 'images') }}">
                             <span class="rain">Влаж. {{ temp_day['day']['avghumidity'] }}</span>
